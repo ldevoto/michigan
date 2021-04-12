@@ -30,10 +30,10 @@ namespace SO
         public GameObject[] red_spade;
         public GameObject red_joker;
         public GameObject red_blank;
-
+        
         public Deck GenerateBlackDeck() 
         {
-            var deck = new Deck();
+            var deck = Deck.CreateEmptyDeck();
             GenerateSuit(deck, Suit.CLUB, black_club);
             GenerateSuit(deck, Suit.DIAMOND, black_diamond);
             GenerateSuit(deck, Suit.HEART, black_heart);
@@ -44,7 +44,7 @@ namespace SO
         
         public Deck GenerateBlueDeck() 
         {
-            var deck = new Deck();
+            var deck = Deck.CreateEmptyDeck();
             GenerateSuit(deck, Suit.CLUB, blue_club);
             GenerateSuit(deck, Suit.DIAMOND, blue_diamond);
             GenerateSuit(deck, Suit.HEART, blue_heart);
@@ -55,7 +55,7 @@ namespace SO
         
         public Deck GenerateRedDeck() 
         {
-            var deck = new Deck();
+            var deck = Deck.CreateEmptyDeck();
             GenerateSuit(deck, Suit.CLUB, red_club);
             GenerateSuit(deck, Suit.DIAMOND, red_diamond);
             GenerateSuit(deck, Suit.HEART, red_heart);

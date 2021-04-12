@@ -22,6 +22,13 @@ namespace DefaultNamespace
             transform.localPosition = newPosition;
         }
 
+        public void MoveTo(Transform parent)
+        {
+            transform.SetParent(parent);
+            transform.localPosition = Vector3.zero;
+            transform.localRotation = Quaternion.identity;
+        }
+
         public void RotateTo(float angle, Vector3 vector3)
         {
             transform.rotation = Quaternion.identity;

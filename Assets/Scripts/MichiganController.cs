@@ -8,21 +8,16 @@ namespace DefaultNamespace
         public PokerCards pokerCards;
         public Player[] players;
         public int handCardsCount = 5;
-        private Deck deck;
-        
+        public int personalDeckCardsCount = 10;
+        public Deck mainDeck;
+
         public void Start()
         {
-            //var deck = pokerCards.GenerateBlackDeck();
-            //deck.Join(pokerCards.GenerateBlueDeck());
-            //deck.Join(pokerCards.GenerateRedDeck());
-            //deck.Shuffle();
-            //deck.Align();
-            
-            deck = pokerCards.GenerateBlueDeck();
-            //deck.Join(pokerCards.GenerateBlackDeck());
-            deck.Join(pokerCards.GenerateRedDeck());
-            deck.Shuffle();
-            deck.AlignTop();
+            mainDeck.Join(pokerCards.GenerateBlueDeck());
+            //mainDeck.Join(pokerCards.GenerateBlackDeck());
+            mainDeck.Join(pokerCards.GenerateRedDeck());
+            mainDeck.Shuffle();
+            mainDeck.AlignTop();
 
             StartGame();
         }
@@ -31,7 +26,8 @@ namespace DefaultNamespace
         {
             foreach (var player in players)
             {
-                player.SetHand(deck.PickCards(handCardsCount));
+                player.SetPersonalDeck(mainDeck.PickCards(personalDeckCardsCount));
+                player.SetHand(mainDeck.PickCards(handCardsCount));
             }
         }
     }

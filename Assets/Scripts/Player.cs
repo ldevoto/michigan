@@ -5,6 +5,8 @@ namespace DefaultNamespace
 {
     public class Player : MonoBehaviour
     {
+        public Deck personalDeck;
+        public Transform handPosition;
         private List<Card> hand = new List<Card>();
         private float angle = 45f;
         private float distance = 0.075f;
@@ -14,23 +16,15 @@ namespace DefaultNamespace
             hand.AddRange(cards);
             foreach (var card in cards)
             {
-                card.gameObject.transform.SetParent(transform);
+                card.MoveTo(handPosition);
+                card.FlipUp();
             }
-            RestartHandPosition();
             DistributeHandEasy();
-        }
-
-        public void RestartHandPosition()
-        {
-            foreach (var card in hand)
-            {
-                card.MoveTo(transform.position);
-            }
         }
 
         public void DistributeHandEasy()
         {
-            float initPosition = -(hand.Count - 1) * distance / 2;
+            var initPosition = -(hand.Count - 1) * distance / 2;
             foreach (var card in hand)
             {
                 card.MoveTo(new Vector3(initPosition, 0, 0));
@@ -51,6 +45,13 @@ namespace DefaultNamespace
                 card.RotateTo(initAngle, transform.TransformVector(new Vector3(0, 0, -0.5f)));
                 initAngle += difference;
             }
+        }
+
+        public void SetPersonalDeck(List<Card> cards)
+        {
+            personalDeck.Join(Deck.CreateDeckWith(cards));
+            personalDeck.AlignTop();
+            personalDeck.FlipFirst();
         }
     }
 }

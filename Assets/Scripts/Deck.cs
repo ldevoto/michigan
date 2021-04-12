@@ -3,10 +3,23 @@ using UnityEngine;
 
 namespace DefaultNamespace
 {
-    public class Deck
+    public class Deck: MonoBehaviour
     {
         public List<Card> cards = new List<Card>();
         private const int ShuffleCounts = 3;
+
+        public static Deck CreateEmptyDeck()
+        {
+            var deck = new GameObject("deck");
+            return deck.AddComponent<Deck>();
+        }
+
+        public static Deck CreateDeckWith(List<Card> cards)
+        {
+            var deck = CreateEmptyDeck();
+            deck.AddAll(cards);
+            return deck;
+        }
 
         public void Shuffle()
         {
@@ -47,17 +60,27 @@ namespace DefaultNamespace
         public void AlignTop()
         {
             var offset = Vector3.zero;
-            foreach (var card in cards)
+            for (var i = Size()-1; i >= 0; i--)
             {
-                card.transform.position = offset;
+                var card = cards[i];
+                card.MoveTo(offset);
                 offset += new Vector3(0, 0.0002f, 0);
                 card.FlipDown();
             }
         }
 
+        public void MoveTo(Transform parent)
+        {
+            var thisTransform = transform;
+            thisTransform.SetParent(parent);
+            thisTransform.localPosition = Vector3.zero;
+            thisTransform.localRotation = Quaternion.identity;
+        }
+
         public void Join(Deck deck)
         {
-            AddAll(deck.GetAllCards());
+            AddAll(deck.PickAllCards());
+            deck.Destroy();
         }
 
         public int Size()
@@ -67,44 +90,67 @@ namespace DefaultNamespace
 
         private void AddAll(IEnumerable<Card> cards)
         {
-            this.cards.AddRange(cards);
+            foreach (var card in cards)
+            {
+                AddCard(card);
+            }
         }
 
-        private IEnumerable<Card> GetAllCards()
+        private List<Card> PickAllCards()
         {
-            return cards;
+            return PickCards(Size());
         }
 
-        public Card PickCard()
-        {
-            return PickCardAt(0);
-        }
-
-        public List<Card> PickCards(int n)
+        public List<Card> PickCards(int n, bool justSee = false)
         {
             var pickedCards = new List<Card>();
             for (var i = 0; i < n; i++)
             {
-                pickedCards.Add(PickCard());
+                pickedCards.Add(PickCard(justSee));
             }
             return pickedCards;
         }
+        
+        public Card PickCard(bool justSee = false)
+        {
+            return PickCardAt(0, justSee);
+        }
 
-        public Card PickCardAt(int index)
+        public Card PickCardAt(int index, bool justSee = false)
         {
             var card = cards[index];
-            cards.RemoveAt(index);
+            if (!justSee)
+            {
+                cards.RemoveAt(index);
+            }
             return card;
         }
 
         public void AddCard(Card card)
         {
-            cards.Add(card);
+            AddCardIn(card, Size());
         }
 
         public void AddCardIn(Card card, int index)
         {
             cards.Insert(index, card);
+            card.transform.SetParent(transform);
+        }
+
+        public void FlipFirst()
+        {
+            var card = PickCard(true);
+            card.FlipUp();
+        }
+
+        public void FlipLast()
+        {
+            var card = PickCard(true);
+        }
+
+        public void Destroy()
+        {
+            Destroy(gameObject);
         }
     }
 }
